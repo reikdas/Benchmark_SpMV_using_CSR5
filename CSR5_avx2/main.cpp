@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <algorithm>
+#include <ctime>
 
 #include "anonymouslib_avx2.h"
 
@@ -12,7 +14,7 @@ using namespace std;
 #endif
 
 #ifndef NUM_RUN
-#define NUM_RUN 100
+#define NUM_RUN 5
 #endif
 
 int call_anonymouslib(int m, int n, int nnzA,
@@ -56,26 +58,36 @@ int call_anonymouslib(int m, int n, int nnzA,
     err = A.spmv(alpha, y);
     //cout << "spmv err = " << err << endl;
 
-    // warm up by running 50 times
+    // warm up by running 1 times
     if (NUM_RUN)
     {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 1; i++) {
             memset(y,0,sizeof(double )*m);
             err = A.spmv(alpha, y);
         }
 
-        anonymouslib_timer CSR5Spmv_timer;
-        CSR5Spmv_timer.start();
-
+        // anonymouslib_timer CSR5Spmv_timer;
+        // CSR5Spmv_timer.start();
+        
+        struct timespec t1, t2;
+        float* exec_time = new float[NUM_RUN];
         for (int i = 0; i < NUM_RUN; i++) {
+            clock_gettime(CLOCK_MONOTONIC, &t1);
             err = A.spmv(alpha, y_bench);
+            clock_gettime(CLOCK_MONOTONIC, &t2);
+            exec_time[i] = (t2.tv_sec - t1.tv_sec) * 1e9 + (t2.tv_nsec - t1.tv_nsec);
         }
 
-        double CSR5Spmv_time = CSR5Spmv_timer.stop() / (double)NUM_RUN;
+        sort(exec_time, exec_time + NUM_RUN);
+        const int mid_point = NUM_RUN/2;
+        cout << "Time: " << exec_time[mid_point] << " ns" << endl;
+        
 
-        cout << "CSR5-based SpMV time = " << CSR5Spmv_time
-             << " ms. Bandwidth = " << gb/(1.0e+6 * CSR5Spmv_time)
-             << " GB/s. GFlops = " << gflop/(1.0e+6 * CSR5Spmv_time)  << " GFlops." << endl;
+        // double CSR5Spmv_time = CSR5Spmv_timer.stop() / (double)NUM_RUN;
+
+        // cout << "CSR5-based SpMV time = " << CSR5Spmv_time
+        //      << " ms. Bandwidth = " << gb/(1.0e+6 * CSR5Spmv_time)
+        //      << " GB/s. GFlops = " << gflop/(1.0e+6 * CSR5Spmv_time)  << " GFlops." << endl;
     }
 
     free(y_bench);
