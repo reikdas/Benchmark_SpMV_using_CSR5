@@ -49,7 +49,7 @@ int call_anonymouslib(int m, int n, int nnzA,
 
     err = A.asCSR5();
 
-    cout << "CSR->CSR5 time = " << asCSR5_timer.stop() << " ms." << endl;
+    // cout << "CSR->CSR5 time = " << asCSR5_timer.stop() << " ms." << endl;
     //cout << "asCSR5 err = " << err << endl;
 
     // check correctness by running 1 time
@@ -88,7 +88,7 @@ int call_anonymouslib(int m, int n, int nnzA,
 int main(int argc, char ** argv)
 {
     // report precision of floating-point
-    cout << "------------------------------------------------------" << endl;
+    // cout << "------------------------------------------------------" << endl;
     char  *precision;
     if (sizeof(VALUE_TYPE) == 4)
     {
@@ -104,8 +104,8 @@ int main(int argc, char ** argv)
         return 0;
     }
 
-    cout << "PRECISION = " << precision << endl;
-    cout << "------------------------------------------------------" << endl;
+    // cout << "PRECISION = " << precision << endl;
+    // cout << "------------------------------------------------------" << endl;
 
     int m, n, nnzA;
     int *csrRowPtrA;
@@ -288,7 +288,7 @@ int main(int argc, char ** argv)
         csrValA[i] = rand() % 10;
     }
 
-    cout << " ( " << m << ", " << n << " ) nnz = " << nnzA << endl;
+    // cout << " ( " << m << ", " << n << " ) nnz = " << nnzA << endl;
 
     VALUE_TYPE *x = (VALUE_TYPE *)_mm_malloc(n * sizeof(VALUE_TYPE), ANONYMOUSLIB_X86_CACHELINE);
     for (int i = 0; i < n; i++)
@@ -318,10 +318,10 @@ int main(int argc, char ** argv)
         }
     }
 
-    double ref_time = ref_timer.stop() / (double)ref_iter;
-    cout << "cpu sequential time = " << ref_time
-         << " ms. Bandwidth = " << gb/(1.0e+6 * ref_time)
-         << " GB/s. GFlops = " << gflop/(1.0e+6 * ref_time)  << " GFlops." << endl << endl;
+    // double ref_time = ref_timer.stop() / (double)ref_iter;
+    // cout << "cpu sequential time = " << ref_time
+    //      << " ms. Bandwidth = " << gb/(1.0e+6 * ref_time)
+    //      << " GB/s. GFlops = " << gflop/(1.0e+6 * ref_time)  << " GFlops." << endl << endl;
 
     // launch compute
     call_anonymouslib(m, n, nnzA, csrRowPtrA, csrColIdxA, csrValA, x, y, alpha);
@@ -342,12 +342,14 @@ int main(int argc, char ** argv)
 //            break;
         }
 
-    if (error_count == 0)
-        cout << "Check... PASS!" << endl;
-    else
-        cout << "Check... NO PASS! #Error = " << error_count << " out of " << m << " entries." << endl;
+    // if (error_count == 0)
+    //     cout << "Check... PASS!" << endl;
+    // else
+    //     cout << "Check... NO PASS! #Error = " << error_count << " out of " << m << " entries." << endl;
 
-    cout << "------------------------------------------------------" << endl;
+    if (error_count != 0)
+        cout << "Check... NO PASS! #Error = " << error_count << " out of " << m << " entries." << endl;
+    // cout << "------------------------------------------------------" << endl;
 
     _mm_free(csrRowPtrA);
     _mm_free(csrColIdxA);
