@@ -13,9 +13,7 @@ using namespace std;
 #define VALUE_TYPE double
 #endif
 
-#ifndef NUM_RUN
-#define NUM_RUN 5
-#endif
+#define NUM_RUN 100
 
 int call_anonymouslib(int m, int n, int nnzA,
                   int *csrRowPtrA, int *csrColIdxA, VALUE_TYPE *csrValA,
@@ -89,6 +87,12 @@ int call_anonymouslib(int m, int n, int nnzA,
         //      << " ms. Bandwidth = " << gb/(1.0e+6 * CSR5Spmv_time)
         //      << " GB/s. GFlops = " << gflop/(1.0e+6 * CSR5Spmv_time)  << " GFlops." << endl;
     }
+
+    // Print y_bench
+    for (int i=0; i<NUM_RUN; i++)
+    {
+        cout << y_bench[i] << "\n";
+    }  
 
     free(y_bench);
 
