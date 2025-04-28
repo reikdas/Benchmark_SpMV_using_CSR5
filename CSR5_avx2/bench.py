@@ -7,6 +7,8 @@ from collections import defaultdict
 FILEPATH = pathlib.Path(__file__).resolve().parent
 BASE_PATH = os.path.join(FILEPATH, "..")
 
+THREADS=[1]
+
 def check_file_matches_parent_dir(filepath):
     """
     Check if a file's name (without suffix) matches its parent directory name.
@@ -19,7 +21,7 @@ if __name__ == "__main__":
     pid = os.getpid()
     cpu_affinity = os.sched_getaffinity(pid)
     mtx_dir = os.path.join(BASE_PATH, "..", "Suitesparse")
-    for threads in [1]:
+    for threads in THREADS:
         with open(f"bench_{threads}thrds.csv", "w") as f:
             f.write("Matrix,Time(ns)\n")
             for file_path in pathlib.Path(mtx_dir).rglob("*"):
